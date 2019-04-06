@@ -14,5 +14,13 @@ const publicPath = path.resolve(__dirname, 'public');
 const mongoose = require('mongoose');
 const sanitize = require('mongo-sanitize');
 
+app.set('view engine', 'hbs');
+app.use(express.urlencoded({extended: false}));
+app.use(express.static(publicPath));
+
+app.get('/', (req, res) => {
+    res.render('home');
+});
+
 
 app.listen(3000);

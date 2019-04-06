@@ -54,26 +54,18 @@ An Example Election
 
 ## Wireframes
 
-(___TODO__: wireframes for all of the pages on your site; they can be as simple as photos of drawings or you can use a tool like Balsamiq, Omnigraffle, etc._)
-
-/list/create - page for creating a new shopping list
-
-![list create](documentation/list-create.png)
-
-/list - page for showing all shopping lists
-
-![list](documentation/list.png)
-
-/list/slug - page for showing specific shopping list
-
-![list](documentation/list-slug.png)
+/home/ - page for to login or register
+![home](documentation/home.png)
 
 ## Site map
 
-(___TODO__: draw out a site map that shows how pages are related to each other_)
-
-Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia/commons/2/20/Sitemap_google.jpg), but you can create one without the screenshots, drop shadows, etc. ... just names of pages and where they flow to.
-
+home -> register \
+	|                     -> elections -> create election -> (goes back to elections)
+	-> login        /                     |
+                                                   -> vote in election -> (goes back to elections)
+                                                                                   |
+                                                                                    -> nominate candidate -> (goes back to elections)
+					
 ## User Stories/Use Cases
 
 1. Non-registered users can register a new account to become a registered voter.
@@ -85,15 +77,8 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 ## Research Topics
 
+* (5 points) Automated functional testing for routes.
 * (3 points) Perform client side form validation using custom JavaScript or JavaScript library
-* (4 points) Perform client side form validation using a JavaScript library
-    * see <code>cs.nyu.edu/~jversoza/ait-final/my-form</code>
-    * if you put in a number that's greater than 5, an error message will appear in the dom
-* (5 points) vue.js
-    * used vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 5 points
-
-10 points total out of 8 required points (___TODO__: addtional points will __not__ count for extra credit_)
-
 
 ## [Link to Initial Main Project File](/src/app.js) 
 
