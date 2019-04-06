@@ -13,32 +13,27 @@ No need to worry with Score!, the voting web app that allows voters to vote with
 
 The application will store Voters and Candidates
 
-* users can have multiple lists (via references)
-* each list can have multiple items (by embedding)
-
-(___TODO__: sample documents_)
-
-An Example User:
+An Example Voter:
 
 ```javascript
 {
-  username: "shannonshopper",
-  hash: // a password hash,
-  lists: // an array of references to List documents
+  name: "Dan",
+  hash: "IStillLikeIke42!"// a password hash,
+  voterid: 24 //unique voter id, randomly generated for each election
 }
 ```
 
-An Example List with Embedded Items:
+An Example Candidate
 
 ```javascript
 {
-  user: // a reference to a User object
-  name: "Breakfast foods",
-  items: [
-    { name: "pancakes", quantity: "9876", checked: false},
-    { name: "ramen", quantity: "2", checked: true},
+  name: "Erin"
+  party: "Orange Party" 
+  electionid: "1" //unique id for election the candidate is running in  
+  votes: [
+    { voterid: 24, score: 3},
+    { voterid: 6, score: 1},
   ],
-  createdAt: // timestamp
 }
 ```
 
