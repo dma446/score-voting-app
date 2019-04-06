@@ -1,5 +1,3 @@
-The content below is an example project proposal / requirements document. Replace the text below the lines marked "__TODO__" with details specific to your project. Remove the "TODO" lines.
-
 # Score! 
 
 ## Overview
@@ -11,15 +9,15 @@ No need to worry with Score!, the voting web app that allows voters to vote with
 
 ## Data Model
 
-The application will store Voters and Candidates
+The application will store Voters, Candidates, and Elections
 
 An Example Voter:
 
 ```javascript
 {
   name: "Dan",
-  hash: "IStillLikeIke42!"// a password hash,
-  voterid: 24 //unique voter id, randomly generated for each election
+  hash: "IStillLikeIke42!",// a password hash,
+  voterid: 24, //unique voter id, randomly generated for each election
 }
 ```
 
@@ -27,13 +25,28 @@ An Example Candidate
 
 ```javascript
 {
-  name: "Erin"
-  party: "Orange Party" 
-  electionid: "1" //unique id for election the candidate is running in  
+  name: "Erin",
+  party: "Orange Party", 
+  candidateid: 1, //unique id for election the candidate is running in  
   votes: [
     { voterid: 24, score: 3},
     { voterid: 6, score: 1},
   ],
+}
+```
+
+An Example Election
+
+```javascript
+{
+  position: "President",
+  electionid: "1" //unique id for election, 
+  candidates: [Candidate],
+  voters: [
+    { voterid: 24},
+    { voterid: 6},
+  ],
+  
 }
 ```
 
