@@ -53,7 +53,7 @@ function approveDomains(opts, certs, cb) {
 const greenlock = require('greenlock-express').create({
     version: 'draft-11',
     server: 'https://acme-v02.api.letsencrypt.org/directory',
-    challenges: { 'dns-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) }, 
+    challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) }, 
     store: require('le-store-certbot').create({ webrootPath: '/tmp/acme-challenges' }),
     approveDomains: approveDomains
 });
