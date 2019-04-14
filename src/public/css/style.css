@@ -1,5 +1,5 @@
 html {
-    background-color: skyblue;
+    background-color: greenyellow;
     height: 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -16,6 +16,6 @@ h2 {
     font-family: cursive;
 }
 
-.login {
+form {
     text-align: center;
 }
