@@ -20,14 +20,15 @@ const Candidate = new mongoose.Schema({
     name: {type: String, required: true},
     party: {type: String, required: false},
     candidateid: {type: Number},
+    electionid: {type: Number},
     votes: []
 });
 
 const Election = new mongoose.Schema({
     position: {type: String, required: true},
-    elcetionid: {type: Number},
+    electionid: {type: Number},
     candidates: [Candidate],
-    votesrs: []
+    voters: []
 });
 
 let dbconf;

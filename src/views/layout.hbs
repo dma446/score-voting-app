@@ -6,9 +6,9 @@
 <h3>
     {{#if user}}
         Logged in as {{user.username}}
-        <form action="/">
+        <form id='logout' action="/">
             <input type='hidden' name='logout' value="true">
-             <input type="submit" value="Logout">
+            <input type="submit" value="Logout">
         </form>
     {{/if}}
 </h3>

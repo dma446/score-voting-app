@@ -19,3 +19,8 @@ h2 {
 form {
     text-align: center;
 }
+
+form .logout {
+    float: left;
+    text-align: left;
+}

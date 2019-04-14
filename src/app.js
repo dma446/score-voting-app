@@ -16,6 +16,7 @@ const express = require('express'),
     mongoose = require('mongoose'),
     sanitize = require('mongo-sanitize'),
     Voter = mongoose.model('Voter'),
+    Candidate = mongoose.model('Candidate'),
     Election = mongoose.model('Election');
 const app = express();
 const path = require('path');
@@ -88,11 +89,80 @@ app.post('/', (req, res, next) => {
 
 app.get('/elections', (req, res) => {
     const content = {};
-
     Election.find((err, elections, count) => {
         content.elections = elections;
         res.render('elections', content);
     });
+});
+
+
+app.get('/elections/create', (req, res) => {
+    res.render('create-election');
+});
+
+//WILL CHANGE!!!
+app.post('/elections/create', (req, res) => {
+    const electionid = Math.floor(Math.random() * 500);
+        new Candidate({
+            name: req.body['name-c1'],
+            party: req.body['party-c1'],
+            electionid: electionid
+        }).save((err, books, count) => {
+            if (err) {
+                res.render('create-election', {error: "Sorry. Something went wrong."});
+            } else {
+                new Candidate({
+                    name: req.body['name-c2'],
+                    party: req.body['party-c2'],
+                    electionid: electionid
+                }).save((err, books, count) => {
+                    if (err) {
+                        res.render('create-election', {error: "Sorry. Something went wrong."});
+                    } else {
+                        new Candidate({
+                            name: req.body['name-c3'],
+                            party: req.body['party-c3'],
+                            electionid: electionid
+                        }).save((err, books, count) => {
+                            if (err) {
+                                res.render('create-election', {error: "Sorry. Something went wrong."});
+                            } else {
+                                Candidate.find({electionid: electionid}, (err, candidates, count) => {
+                                    new Election({
+                                        position: req.body.position,
+                                        electionid: electionid,
+                                        candidates: candidates
+                                    }).save((err, elections, count) => {
+                                        if (err) {
+                                            res.render('create-election', {error: "Sorry. Something went wrong."});
+                                        } else {
+                                            res.redirect('/elections');
+                                        }
+                                    });
+                                }); 
+                            }
+                        });
+                    }
+                });
+            }
+        });
+});
+
+app.get('/elections/voting', (req, res) => {
+    Election.find({electionid: req.query.electionid}, (err, election, count) => {
+        const content = {
+            election: election[0],
+            candidate1: election[0].candidates[0],
+            candidate2: election[0].candidates[1],
+            candidate3: election[0].candidates[2]
+        };
+        res.render('voting', content);
+    });
+    
+});
+
+app.post('/elections/voting', (req, res) => {
+    
 });
 
 app.get('/register', (req, res) => {
