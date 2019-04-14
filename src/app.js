@@ -5,8 +5,6 @@
  *  app.js
  */
 
-'use strict';
-
 require('./db');
 require('./auth');
 
@@ -40,7 +38,7 @@ app.use((req, res, next) => {
 
 app.set('view engine', 'hbs');
 
-function approveDomains(opts, certs, cb) {
+/*unction approveDomains(opts, certs, cb) {
     if (certs) {
         opts.domains = certs.altnames;
     } else {
@@ -56,7 +54,7 @@ const greenlock = require('greenlock-express').create({
     challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) }, 
     store: require('le-store-certbot').create({ webrootPath: '/tmp/acme-challenges' }),
     approveDomains: approveDomains
-});
+});*/
 
 
 app.get('/', (req, res) => {
