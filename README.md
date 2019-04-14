@@ -2,7 +2,7 @@
 
 ## Overview
 
-It's election time and you have to vote for the next president of your student government. Alice of the Apple Party is alight but she is not your favorite. You also hate Bob of the Bird Party. You like Carol of the Cat Party but you are worried she might take votes away from Alice and allow the divisive candidate Bob to win. You can only vote for one. What are you to do? 
+It's election time and you have to vote for the next president of your student government. Alice of the Apple Party is alright but she is not your favorite. You also hate Bob of the Bird Party. You like Carol of the Cat Party but you are worried she might take votes away from Alice and allow the divisive candidate Bob to win. You can only vote for one. What are you to do? 
 
 No need to worry with Score!, the voting web app that allows voters to vote without worrying about spoilers or divisive winners. No longer are you forced to vote for one candidate. You can now give each candidate a rating from 0 - 4. Voters can simply register on the app to give each candidate a rating. They can also nominate their own candidates or nominate themselves! The candidates with the highest average score rating wins!
 
