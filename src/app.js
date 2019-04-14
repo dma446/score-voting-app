@@ -40,11 +40,6 @@ app.use((req, res, next) => {
 
 app.set('view engine', 'hbs');
 
-
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-
-
 function approveDomains(opts, certs, cb) {
     if (certs) {
         opts.domains = certs.altnames;
