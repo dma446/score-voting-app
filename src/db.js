@@ -18,7 +18,7 @@ Voter.plugin(passportLocalMongoose);
 
 const Candidate = new mongoose.Schema({
     name: {type: String, required: true},
-    party: {type: String, required: false},
+    party: {type: String},
     candidateid: {type: Number},
     electionid: {type: Number},
     votes: []
@@ -28,7 +28,8 @@ const Election = new mongoose.Schema({
     position: {type: String, required: true},
     electionid: {type: Number},
     candidates: [Candidate],
-    voters: []
+    voters: [],
+    creatorid: {type: Number}
 });
 
 let dbconf;

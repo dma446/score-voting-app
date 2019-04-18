@@ -9,7 +9,6 @@
 
 require('./db');
 require('./auth');
-
 const express = require('express'), 
     router = express.Router(),
     passport = require('passport'),
@@ -19,6 +18,7 @@ const express = require('express'),
     Candidate = mongoose.model('Candidate'),
     Election = mongoose.model('Election');
 const app = express();
+const async = require('async');
 const path = require('path');
 const publicPath = path.resolve(__dirname, 'public');
 const session = require('express-session');
@@ -64,17 +64,6 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res, next) => {
-    if (req.body.logout === true) {
-        passport.authenticate('local', (err, user) => {
-            if (user) {
-                req.logOut(user, (err) => {
-                    res.redirect('/');
-                });
-            } else {
-                res.redirect('/', {error: 'Didn\'t log out properly!'});
-            }  
-        });   
-    } else {
         passport.authenticate('local', (err, user) => {
             if (user) {
                 req.logIn(user, (err) => {
@@ -84,7 +73,11 @@ app.post('/', (req, res, next) => {
                 res.render('home', {error: 'Your username or password is incorrect.'});
             }
         })(req, res, next);
-    }
+});
+
+app.get('/logout', (req, res) => {
+    req.logOut();
+    res.redirect('/');
 });
 
 app.get('/elections', (req, res) => {
@@ -103,66 +96,65 @@ app.get('/elections/create', (req, res) => {
 //WILL CHANGE!!!
 app.post('/elections/create', (req, res) => {
     const electionid = Math.floor(Math.random() * 500);
-        new Candidate({
-            name: req.body['name-c1'],
-            party: req.body['party-c1'],
-            electionid: electionid
-        }).save((err, books, count) => {
-            if (err) {
-                res.render('create-election', {error: "Sorry. Something went wrong."});
-            } else {
-                new Candidate({
-                    name: req.body['name-c2'],
-                    party: req.body['party-c2'],
-                    electionid: electionid
-                }).save((err, books, count) => {
-                    if (err) {
-                        res.render('create-election', {error: "Sorry. Something went wrong."});
-                    } else {
-                        new Candidate({
-                            name: req.body['name-c3'],
-                            party: req.body['party-c3'],
-                            electionid: electionid
-                        }).save((err, books, count) => {
-                            if (err) {
-                                res.render('create-election', {error: "Sorry. Something went wrong."});
-                            } else {
-                                Candidate.find({electionid: electionid}, (err, candidates, count) => {
-                                    new Election({
-                                        position: req.body.position,
-                                        electionid: electionid,
-                                        candidates: candidates
-                                    }).save((err, elections, count) => {
-                                        if (err) {
-                                            res.render('create-election', {error: "Sorry. Something went wrong."});
-                                        } else {
-                                            res.redirect('/elections');
-                                        }
-                                    });
-                                }); 
-                            }
-                        });
-                    }
-                });
-            }
+    const count = Number(req.body['num-of-candidates'].pop());
+    const candidateArray = Array(count);
+
+    for (let i = 1; i <= count; i++) {
+        const candidate = new Candidate({
+            name: sanitize(req.body['name-c' + i]),
+            party: sanitize(req.body['party-c' + i]),
+            electionid: sanitize(electionid)
         });
+        candidateArray[i-1] = candidate;
+    }
+
+    async.forEach(candidateArray, (candidate, callback) => {
+        candidate.save((err, item) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log('Saved!');
+            callback();
+        });
+    }, (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Everything saved');
+            Candidate.find({electionid: electionid}, (err, candidates, count) => {
+                console.log('yee');
+            new Election({
+                position: sanitize(req.body.position),
+                electionid: sanitize(electionid),
+                candidates: sanitize(candidates)
+            }).save((err, elections, count) => {
+                if (err) {
+                    res.render('create-election', {error: "Sorry. Something went wrong." + err});
+                } else {
+                    res.redirect('/elections');
+                }
+            });
+        });
+        }
+    });
+
+ 
 });
+
 
 app.get('/elections/voting', (req, res) => {
     Election.find({electionid: req.query.electionid}, (err, election, count) => {
         const content = {
             election: election[0],
-            candidate1: election[0].candidates[0],
-            candidate2: election[0].candidates[1],
-            candidate3: election[0].candidates[2]
+            candidates: election[0].candidates
         };
-        res.render('voting', content);
+        res.render('voting', content);                 
     });
     
 });
 
 app.post('/elections/voting', (req, res) => {
-    
+    console.log(req.body['score-Tim']);
 });
 
 app.get('/register', (req, res) => {
@@ -173,7 +165,16 @@ app.post('/register', (req, res) => {
     Voter.register(new Voter({username: req.body.username}), 
         req.body.password, (err, user) => {
             if (err) {
-                res.render('register', {error: 'Sorry, your registration information is not valid.'});
+                res.render('register', {error: 'Sorry, your registration information is not valid.' + err});
+            } else if (req.body.password !== req.body.confirm) {
+                Voter.remove({username: req.body.username}, (err) => {
+                    if (err) {
+                        console.log('oh noes');
+                    } else {
+                        res.render('register', {error: 'Passwords do not match!'});
+                    }
+                });
+      
             } else {
                 passport.authenticate('local')(req, res, () => {
                     res.redirect('/elections');

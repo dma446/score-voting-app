@@ -2,14 +2,14 @@
 <head>
 <title>Score!</title>
 <h1>Score!</h1>
-<h2>
 <h3>
     {{#if user}}
-        Logged in as {{user.username}}
-        <form id='logout' action="/">
-            <input type='hidden' name='logout' value="true">
-            <input type="submit" value="Logout">
-        </form>
+        <div id="curr-user">
+           {{user.username}}<br>
+            <form method="GET" action="/logout">
+                <button id="btn-logout">Logout</button>
+            </form>
+        </div>
     {{/if}}
 </h3>
 </head>

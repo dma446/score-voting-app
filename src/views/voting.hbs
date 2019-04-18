@@ -1,8 +1,9 @@
 <h1>Election for {{election.position}}</h1>
 <h2>{{error}}</h2>
 <form method="POST">
-    {{candidate1.name}} <input type="range" name="score-{{candidate1.name}}" value=""><br>
-    {{candidate2.name}} <input type="range" name="score-{{candidate2.name}}" value=""><br>
-    {{candidate3.name}} <input type="range" name="score-{{candidate3.name}}" value=""><br>
+    {{#each candidates}}
+    {{name}}:<br>
+        Awful <input type="range" name="score-{{name}}" min="0", max="10"> Excellent<br><br>
+    {{/each}}
     <input type="submit" value="Vote">
 </form>

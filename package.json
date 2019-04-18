@@ -2,7 +2,7 @@
   "name": "dma446-final-project",
   "version": "1.0.0",
   "description": "## Overview",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,17 +17,20 @@
   },
   "homepage": "https://github.com/nyu-csci-ua-0480-008-spring-2019/dma446-final-project#readme",
   "dependencies": {
+    "ajax": "0.0.4",
+    "async": "^2.6.2",
     "bcrypt": "^3.0.5",
     "express": "^4.16.4",
     "express-session": "^1.16.1",
     "greenlock-express": "^2.7.6",
-    "hbs": "^4.0.3",
+    "hbs": "^4.0.4",
     "le-acme-core": "^2.1.4",
     "mongo-sanitize": "^1.0.1",
     "mongoose": "^5.5.0",
     "mongoose-url-slugs": "^1.0.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^5.0.1"
+    "passport-local-mongoose": "^5.0.1",
+    "xmlhttprequest": "^1.8.0"
   }
 }
