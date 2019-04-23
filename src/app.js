@@ -84,6 +84,7 @@ app.get('/elections', (req, res) => {
     const content = {};
     Election.find((err, elections, count) => {
         content.elections = elections;
+        //content.username = res.locals.user;
         res.render('elections', content);
     });
 });
@@ -95,50 +96,45 @@ app.get('/elections/create', (req, res) => {
 
 //WILL CHANGE!!!
 app.post('/elections/create', (req, res) => {
-    const electionid = Math.floor(Math.random() * 500);
-    const count = Number(req.body['num-of-candidates'].pop());
-    const candidateArray = Array(count);
-
-    for (let i = 1; i <= count; i++) {
-        const candidate = new Candidate({
-            name: sanitize(req.body['name-c' + i]),
-            party: sanitize(req.body['party-c' + i]),
-            electionid: sanitize(electionid)
-        });
-        candidateArray[i-1] = candidate;
-    }
-
-    async.forEach(candidateArray, (candidate, callback) => {
-        candidate.save((err, item) => {
+        const electionid = Math.floor(Math.random() * 500);
+        const count = Number(req.body['num-of-candidates']);
+        const candidateArray = Array(count);
+        for (let i = 1; i <= count; i++) {
+            const candidate = new Candidate({
+                name: sanitize(req.body['name-c' + i]),
+                party: sanitize(req.body['party-c' + i]),
+                electionid: sanitize(electionid)
+            });
+            candidateArray[i-1] = candidate;
+        }
+    
+        async.forEach(candidateArray, (candidate, callback) => {
+            candidate.save((err, item) => {
+                if (err) {
+                    console.log(err);
+                }
+                callback();
+            });
+        }, (err) => {
             if (err) {
                 console.log(err);
-            }
-            console.log('Saved!');
-            callback();
-        });
-    }, (err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('Everything saved');
-            Candidate.find({electionid: electionid}, (err, candidates, count) => {
-                console.log('yee');
-            new Election({
-                position: sanitize(req.body.position),
-                electionid: sanitize(electionid),
-                candidates: sanitize(candidates)
-            }).save((err, elections, count) => {
-                if (err) {
-                    res.render('create-election', {error: "Sorry. Something went wrong." + err});
-                } else {
-                    res.redirect('/elections');
-                }
+            } else {
+                console.log('Everything saved');
+                Candidate.find({electionid: electionid}, (err, candidates, count) => {
+                new Election({
+                    position: sanitize(req.body.position),
+                    electionid: sanitize(electionid),
+                    candidates: sanitize(candidates)
+                }).save((err, elections, count) => {
+                    if (err) {
+                        res.render('create-election', {error: "Sorry. Something went wrong." + err});
+                    } else {
+                        res.redirect('/elections');
+                    }
+                });
             });
-        });
-        }
-    });
-
- 
+            }
+        });  
 });
 
 
@@ -149,8 +145,29 @@ app.get('/elections/voting', (req, res) => {
             candidates: election[0].candidates
         };
         res.render('voting', content);                 
+    }); 
+});
+
+app.post('/elections/voting', (req, res) => {
+    Election.find({electionid: req.body.electionid}, (err, election, count) => {
+        const candidates = election[0].candidates;
+        async.forEach(candidates, (candidate, callback) => {
+            candidate.votes.push(req.body['score-' + candidate.name]);
+            candidate.save((err, item) => {
+                if (err) {
+                    console.log(err);
+                }
+                callback();
+            });
+        }, (err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Everything saved');
+                res.redirect('/elections');
+            }
+        }); 
     });
-    
 });
 
 app.post('/elections/voting', (req, res) => {

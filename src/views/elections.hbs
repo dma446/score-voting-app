@@ -1,7 +1,8 @@
 <h1>Elections</h1>
 <h2>{{error}}</h2>
 {{#each elections}}
-    <h2>{{position}}</h2>
+    {{position}}
+    <br>Started by {{user.username}}
     <form method="GET" action="elections/voting/">
         <input type="hidden" name="electionid" value={{electionid}}>
         <input type="submit" value="Vote!">

@@ -1,9 +1,10 @@
 <h1>Election for {{election.position}}</h1>
 <h2>{{error}}</h2>
-<form method="POST">
+<form method="POST" action="/elections/voting">
     {{#each candidates}}
-    {{name}}:<br>
-        Awful <input type="range" name="score-{{name}}" min="0", max="10"> Excellent<br><br>
+    {{name}} ({{party}}):<br>
+        0 <input type="range" name="score-{{name}}" min="0", max="10"> 10<br><br>
+        <input type="hidden" name="electionid" value="{{electionid}}">
     {{/each}}
     <input type="submit" value="Vote">
 </form>

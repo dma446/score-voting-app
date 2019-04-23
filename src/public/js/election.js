@@ -6,7 +6,7 @@ function handleClick(count) {
     req.open('GET', 'create', true);
     req.addEventListener('load', (evt) => {
         const div = document.body.appendChild(document.createElement('div'));
-        div.id = 'candidate';
+        div.className = 'candidate';
         div.appendChild(document.createElement('br'));
         div.appendChild(document.createElement('span')).textContent = 'Candidate #' + count;
         div.appendChild(document.createElement('br'));
@@ -18,12 +18,8 @@ function handleClick(count) {
         party.textContent = "Party: ";
         div.appendChild(document.createElement('input')).name = 'party-c' + count;
         div.appendChild(document.createElement('br'));
-        const numOfCandidates = document.body.appendChild(document.createElement('input'));
-        numOfCandidates.type = 'hidden';
-        numOfCandidates.name = 'num-of-candidates';
-        numOfCandidates.value = count;
+        document.querySelector('#num').value = count;
         document.querySelector('#start').appendChild(div);
-        document.querySelector('#start').appendChild(numOfCandidates);
     });
     req.addEventListener('error', (evt) => {
         console.log('oh noes');
@@ -32,10 +28,23 @@ function handleClick(count) {
     
 }
 
+function validate() {
+    const candidates = document.querySelector('#start').getElementsByClassName('candidate');
+    for (let i = 0; i < candidates.length; i++) {
+        const name = candidates[i].getElementsByTagName('input')[0];
+        if (name.value === "") {
+            alert('Please enter candidate name!');
+            name.focus();
+            return false;
+        }
+    }
+    return (true);
+}
+
 function main() {
-    const btn = document.querySelector('#btn');
+    const btnAdd = document.querySelector('#btn-add');
     let count = 0;
-    btn.addEventListener('click', () => { 
+    btnAdd.addEventListener('click', () => { 
         count++;
         handleClick(count); 
     });
