@@ -97,15 +97,17 @@ app.get('/elections/create', (req, res) => {
 //WILL CHANGE!!!
 app.post('/elections/create', (req, res) => {
         const electionid = Math.floor(Math.random() * 500);
-        const count = Number(req.body['num-of-candidates']);
-        const candidateArray = Array(count);
-        for (let i = 1; i <= count; i++) {
+        const names = req.body.names;
+        const parties = req.body.parties;
+        const numOfCandidates = names.length;
+        const candidateArray = new Array(numOfCandidates);
+        for (let i = 0; i < numOfCandidates; i++) {
             const candidate = new Candidate({
-                name: sanitize(req.body['name-c' + i]),
-                party: sanitize(req.body['party-c' + i]),
+                name: sanitize(names[i]),
+                party: sanitize(parties[i]),
                 electionid: sanitize(electionid)
             });
-            candidateArray[i-1] = candidate;
+            candidateArray[i] = candidate;
         }
     
         async.forEach(candidateArray, (candidate, callback) => {

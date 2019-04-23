@@ -10,7 +10,9 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const URLSlugs = require('mongoose-url-slugs');
 //my schema goes here
 
-const Voter = new mongoose.Schema({});
+const Voter = new mongoose.Schema({
+    username: {type: String, required: true}
+});
 
 Voter.plugin(passportLocalMongoose);
 
@@ -24,7 +26,7 @@ const Candidate = new mongoose.Schema({
 const Election = new mongoose.Schema({
     position: {type: String, required: true},
     //creatorid: {type: Number, required: true},
-    electionid: Number,
+    electionid: {type: Number, required: true},
     candidates: [Candidate],
     voterids: [Number],
 });
