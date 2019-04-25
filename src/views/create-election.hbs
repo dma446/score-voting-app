@@ -1,10 +1,10 @@
 <h1>Create Election</h1>
 <h2>{{error}}</h2>
 <form id='start' method="POST" onsubmit="return(validate());">
-    <span>Position: <input type="text" class="position" name="position">
+    <span>Position: <input type="text" id="position" name="position">
     </span>
     <input type="hidden" id="num" name="num-of-candidates">
     <button id="btn-start">Start Election</button>
 </form>
 <button id="btn-add">Add Candidate</button>
-<script src='/js/election.js'></script>
+<script src='/js/create_election.js'></script>

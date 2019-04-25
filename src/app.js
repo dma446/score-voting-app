@@ -60,7 +60,11 @@ const greenlock = require('greenlock-express').create({
 });*/
 
 app.get('/', (req, res) => {
-    res.render('home');
+    if (req.isAuthenticated()) {
+        res.redirect("/elections");
+    } else {
+        res.render('home');
+    }
 });
 
 app.post('/', (req, res, next) => {
@@ -81,99 +85,114 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/elections', (req, res) => {
-    const content = {};
-    Election.find((err, elections, count) => {
-        content.elections = elections;
-        //content.username = res.locals.user;
-        res.render('elections', content);
-    });
+    if (req.isAuthenticated()) {
+        const content = {};
+        Election.find((err, elections, count) => {
+            const voterid = String(req.user._id);
+            for (let i = 0; i < elections.length; i++) {
+                elections[i].hasVoted = [];
+                if (elections[i].voterids.includes(voterid)) {
+                    elections[i].hasVoted.push(true);
+                } 
+            }
+               
+            content.elections = elections;
+            res.render('elections', content);
+        });
+    } else {
+        res.redirect('/');
+    }
 });
 
 
 app.get('/elections/create', (req, res) => {
-    res.render('create-election');
+    if (req.isAuthenticated()) {
+        res.render('create-election');
+    } else {
+        res.redirect('/');
+    }
 });
 
 //WILL CHANGE!!!
 app.post('/elections/create', (req, res) => {
-        const electionid = Math.floor(Math.random() * 500);
-        const names = req.body.names;
-        const parties = req.body.parties;
-        const numOfCandidates = names.length;
-        const candidateArray = new Array(numOfCandidates);
-        for (let i = 0; i < numOfCandidates; i++) {
-            const candidate = new Candidate({
-                name: sanitize(names[i]),
-                party: sanitize(parties[i]),
-                electionid: sanitize(electionid)
-            });
-            candidateArray[i] = candidate;
-        }
-    
-        async.forEach(candidateArray, (candidate, callback) => {
-            candidate.save((err, item) => {
-                if (err) {
-                    console.log(err);
-                }
-                callback();
-            });
-        }, (err) => {
+    const electionid = mongoose.Types.ObjectId();
+    const names = req.body.names;
+    const parties = req.body.parties;
+    const numOfCandidates = names.length;
+    const candidateArray = new Array(numOfCandidates);
+    for (let i = 0; i < numOfCandidates; i++) {
+        const candidate = new Candidate({
+            name: sanitize(names[i]),
+            party: sanitize(parties[i]),
+            electionid: electionid
+        });
+        candidateArray[i] = candidate;
+    }
+
+    async.forEach(candidateArray, (candidateObj, callback) => {
+        candidateObj.save((err, item) => {
             if (err) {
                 console.log(err);
-            } else {
-                console.log('Everything saved');
-                Candidate.find({electionid: electionid}, (err, candidates, count) => {
-                new Election({
+            }
+            callback();
+        });
+    }, (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Everything saved');
+            Candidate.find({electionid: electionid}, (err, candidates, count) => {
+                const election = new Election({
+                    _id: electionid,
+                    creator: req.user.username,
                     position: sanitize(req.body.position),
-                    electionid: sanitize(electionid),
-                    candidates: sanitize(candidates)
-                }).save((err, elections, count) => {
+                    candidates: candidates 
+                });
+                election.save((err, elections, count) => {
                     if (err) {
                         res.render('create-election', {error: "Sorry. Something went wrong." + err});
-                    } else {
-                        res.redirect('/elections');
                     }
+                    console.log(election.candidates);
+                    res.redirect('/elections');
                 });
             });
-            }
-        });  
+        }
+    });  
 });
 
 
 app.get('/elections/voting', (req, res) => {
-    Election.find({electionid: req.query.electionid}, (err, election, count) => {
-        const content = {
-            election: election[0],
-            candidates: election[0].candidates
-        };
-        res.render('voting', content);                 
-    }); 
-});
-
-app.post('/elections/voting', (req, res) => {
-    Election.find({electionid: req.body.electionid}, (err, election, count) => {
-        const candidates = election[0].candidates;
-        async.forEach(candidates, (candidate, callback) => {
-            candidate.votes.push(req.body['score-' + candidate.name]);
-            candidate.save((err, item) => {
-                if (err) {
-                    console.log(err);
-                }
-                callback();
-            });
-        }, (err) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('Everything saved');
-                res.redirect('/elections');
-            }
+    if (req.isAuthenticated()) {
+        Election.find({_id: req.query.electionid}, (err, election, count) => {
+            const content = {
+                election: election[0],
+                candidates: election[0].candidates
+            };
+            res.render('voting', content);                 
         }); 
-    });
+    } else {
+        res.redirect('/');
+    }
 });
 
 app.post('/elections/voting', (req, res) => {
-    console.log(req.body['score-Tim']);
+    Election.findByIdAndUpdate(req.body.electionid, {"$push": {voterids: req.user._id}}, {"new": true}, (err, election) => {
+        if (err) {
+            res.status = 500;
+            res.send(err);
+        }
+        const candidates = election.candidates;
+        candidates.forEach((candidate) => {
+            const vote = req.body['score-'+candidate.name];
+            Candidate.findByIdAndUpdate(candidate._id, {"$push": {votes: vote}}, {"new": true}, (err, candidate) => {
+                if (err) {
+                    res.status = 500;
+                    res.send(err);
+                }
+            });
+        });
+        res.redirect('/elections');
+    });
 });
 
 app.get('/register', (req, res) => {
@@ -201,6 +220,8 @@ app.post('/register', (req, res) => {
             }
         });
 });
+
+
 
 module.exports = router;
 

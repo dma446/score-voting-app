@@ -1,14 +1,22 @@
 <h1>Elections</h1>
 <h2>{{error}}</h2>
 {{#each elections}}
-    {{position}}
-    <br>Started by {{user.username}}
-    <form method="GET" action="elections/voting/">
-        <input type="hidden" name="electionid" value={{electionid}}>
-        <input type="submit" value="Vote!">
-    </form>
+    {{position}}        
+    <br>Created by {{creator}}
+    {{#if hasVoted}}
+        <span>
+            <br>You have voted in this Election.<br>
+        </span>
+    {{else}}
+        <form method="GET" id={{_id}} action="elections/voting">
+            <input type="hidden" name="electionid" value={{_id}}>
+            <input type="submit" value="Vote!">
+        </form>
+    {{/if}}
 {{/each}}
 <br>
 <form method="GET" action="/elections/create">
     <input type="submit" value="Create an Election!">
 </form>
+<input type="hidden" id="elections" value="{{elections}}">
+<input type="hidden" id="hasVoted" value={{hasVoted}}>
