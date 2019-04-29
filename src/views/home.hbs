@@ -1,14 +1,14 @@
 <h2>Score the Vote!</h2>
 <h1>Home</h1>
 <h2>{{error}}</h2>
-<form class="login" method="POST">
-    Username: <input type="text" name="username"><br>
-    Password: <input type="password" name="password"><br>
+<form class="login" method="POST" onsubmit="return(validateLogin());">
+    Username: <input type="text" id="username" name="username"><br>
+    Password: <input type="password" id="password" name="password"><br>
     <input type="submit" value="Login"><br>
 </form>
 
 <form action="/register">
     First time voter? Register here! <input type="submit" value="Register">
 </form>
-
+<script src='/js/login.js'></script>
 

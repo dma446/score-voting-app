@@ -87,18 +87,70 @@ app.get('/logout', (req, res) => {
 app.get('/elections', (req, res) => {
     if (req.isAuthenticated()) {
         const content = {};
-        Election.find((err, elections, count) => {
-            const voterid = String(req.user._id);
-            for (let i = 0; i < elections.length; i++) {
-                elections[i].hasVoted = [];
-                if (elections[i].voterids.includes(voterid)) {
-                    elections[i].hasVoted.push(true);
-                } 
-            }
-               
-            content.elections = elections;
-            res.render('elections', content);
-        });
+        const filter = req.query.filter;
+        const input = req.query.input;
+        if (filter === "position") {
+            Election.find({position: input}, (err, elections, count) => {
+                const voterid = String(req.user._id);
+                elections.forEach((election) => {
+                    if (election.voterids.includes(voterid)) {
+                        election.hasVoted = true;
+                    }
+                    if (election.creator === req.user.username) {
+                        election.isCreator = true;
+                    }
+                    election.electionData = JSON.stringify(election);
+                });
+                content.elections = elections;
+                res.render('elections', content);
+            });
+        } else if (filter === "creator") {
+            Election.find({creator: input}, (err, elections, count) => {
+                const voterid = String(req.user._id);
+                elections.forEach((election) => {
+                    if (election.voterids.includes(voterid)) {
+                        election.hasVoted = true;
+                    }
+                    if (election.creator === req.user.username) {
+                        election.isCreator = true;
+                    }
+                    election.electionData = JSON.stringify(election);
+                });
+                content.elections = elections;
+                res.render('elections', content);
+            });
+        } else if (filter === "electionid") {
+            Election.find({_id: input}, (err, elections, count) => {
+                const voterid = String(req.user._id);
+                elections.forEach((election) => {
+                    if (election.voterids.includes(voterid)) {
+                        election.hasVoted = true;
+                    }
+                    if (election.creator === req.user.username) {
+                        election.isCreator = true;
+                    }
+                    election.electionData = JSON.stringify(election);
+                });
+                content.elections = elections;
+                res.render('elections', content);
+            });
+        }
+        else {
+            Election.find((err, elections, count) => {
+                const voterid = String(req.user._id);
+                elections.forEach((election) => {
+                    if (election.voterids.includes(voterid)) {
+                        election.hasVoted = true;
+                    }
+                    if (election.creator === req.user.username) {
+                        election.isCreator = true;
+                    }
+                    election.electionData = JSON.stringify(election);
+                });
+                content.elections = elections;
+                res.render('elections', content);
+            });
+        }
     } else {
         res.redirect('/');
     }
@@ -160,7 +212,6 @@ app.post('/elections/create', (req, res) => {
     });  
 });
 
-
 app.get('/elections/voting', (req, res) => {
     if (req.isAuthenticated()) {
         Election.find({_id: req.query.electionid}, (err, election, count) => {
@@ -182,16 +233,17 @@ app.post('/elections/voting', (req, res) => {
             res.send(err);
         }
         const candidates = election.candidates;
-        candidates.forEach((candidate) => {
-            const vote = req.body['score-'+candidate.name];
-            Candidate.findByIdAndUpdate(candidate._id, {"$push": {votes: vote}}, {"new": true}, (err, candidate) => {
-                if (err) {
-                    res.status = 500;
-                    res.send(err);
-                }
-            });
+        for (let i = 0; i < candidates.length; i++) {
+            const vote = req.body['score-'+candidates[i].name];
+            candidates[i].votes.push(vote);
+            const total = candidates[i].votes.reduce((acc, currVote) => acc + currVote);
+            candidates[i].score = total / candidates[i].votes.length;
+        }
+        election.markModified('candidates');
+        election.save((err, updatedElection, count) => {
+            console.log(err, updatedElection);
+            res.redirect('/elections');
         });
-        res.redirect('/elections');
     });
 });
 
@@ -201,24 +253,14 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
     Voter.register(new Voter({username: req.body.username}), 
-        req.body.password, (err, user) => {
-            if (err) {
-                res.render('register', {error: 'Sorry, your registration information is not valid.' + err});
-            } else if (req.body.password !== req.body.confirm) {
-                Voter.remove({username: req.body.username}, (err) => {
-                    if (err) {
-                        console.log('oh noes');
-                    } else {
-                        res.render('register', {error: 'Passwords do not match!'});
-                    }
-                });
-      
-            } else {
-                passport.authenticate('local')(req, res, () => {
-                    res.redirect('/elections');
-                });
-            }
+    req.body.password, (err, user) => {
+        if (err) {
+            res.render('register', {error: 'Sorry, your registration information is not valid.' + err});
+        } 
+        passport.authenticate('local')(req, res, () => {
+            res.redirect('/elections');
         });
+    });
 });
 
 

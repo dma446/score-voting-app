@@ -1,22 +1,61 @@
 <h1>Elections</h1>
 <h2>{{error}}</h2>
-{{#each elections}}
-    {{position}}        
-    <br>Created by {{creator}}
-    {{#if hasVoted}}
-        <span>
-            <br>You have voted in this Election.<br>
-        </span>
-    {{else}}
-        <form method="GET" id={{_id}} action="elections/voting">
-            <input type="hidden" name="electionid" value={{_id}}>
-            <input type="submit" value="Vote!">
-        </form>
-    {{/if}}
-{{/each}}
-<br>
 <form method="GET" action="/elections/create">
     <input type="submit" value="Create an Election!">
 </form>
+<form method="GET" action="/elections">
+    Filter:
+    <select name="filter">
+        <option value="position">Position</option>
+        <option value="creator">Creator</option>
+        <option value="electionid">Election ID</option>
+    </select>
+    <input type="text" name="input">
+    <input type="submit" value="Filter">
+</form>
+<div class="elections">
+    <table style="width:50%">
+        <tr>
+            <th>Election</th>
+            <th>Creator</th>
+            <th>Election ID</th>
+            <th>Vote</th>
+        </tr>
+        {{#each elections}}
+        <tr class="table-contents">
+            <th>{{position}}</th>
+            <th>{{creator}}</th>
+            <th>{{id}}</th>
+            <th>
+                {{#if hasVoted}}
+                    Voted
+            {{else}}
+                <form method="GET" id={{_id}} action="elections/voting">
+                    <input type="hidden" name="electionid" value={{_id}}>
+                    <input type="submit" value="Vote!">
+                </form>
+            {{/if}}</th>
+            <th> 
+                <div class="results">
+                    <input type="button" id="show-results" value="Results">
+                    <div id="modal-results" class="modal">
+                        <div class="modal-content">
+                            Election for {{position}}<br>
+                            Created by {{creator}}<br><br>
+                            {{#each candidates}}
+                                {{name}} ({{party}}): {{score}}<br>
+                            {{/each}}
+                            <br>
+                            <input type="button" class="btn-close" id="close-results" value="Close">
+                        </div>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    {{/each}}
+    </table>
+</div>
+<br>
 <input type="hidden" id="elections" value="{{elections}}">
 <input type="hidden" id="hasVoted" value={{hasVoted}}>
+<script src='/js/elections.js'></script>

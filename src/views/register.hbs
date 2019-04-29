@@ -1,10 +1,11 @@
 <h1>Registration</h1>
 <h2>{{error}}</h2>
-<form novalidate class="login" method="POST">
-    Username: <input type="text" name="username" value=""><br>
+<form class="login" method="POST" onsubmit="return(validateRegister());">
+    Username: <input type="text" name="username" id="username"><br>
     <span>Password:</span>
-    <input type="password" name="password" value="">
+    <input type="password" name="password" id="password">
     <span class="error" aria-live="=polite"></span><br>
-    Confirm Password: <input type="password" id="password" name="confirm" value=""><br>
+    Confirm Password: <input type="password" id="confirm" name="confirm"><br>
     <input type="submit" value="Register">
 </form>
+<script src='/js/login.js'></script>

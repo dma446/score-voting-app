@@ -20,7 +20,8 @@ const Candidate = new mongoose.Schema({
     name: {type: String, required: true},
     party: {type: String},
     electionid: {type: String, required: true},
-    votes: [Number]
+    votes: [Number],
+    score: Number
 });
 
 const Election = new mongoose.Schema({
