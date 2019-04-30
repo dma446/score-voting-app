@@ -57,12 +57,11 @@ An Example Election
 
 ## Site map
 
-home -> register \
-	|                     -> elections -> create election -> (goes back to elections)
-	-> login        /                     |
-                                                   -> vote in election -> (goes back to elections)
-                                                                                   |
-                                                                                    -> nominate candidate -> (goes back to elections)
+home/login -> register \
+	|              
+	-> elections -> create election -> (goes back to elections)
+		|
+         vote in election -> (goes back to elections)
 					
 ## User Stories/Use Cases
 
