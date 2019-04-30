@@ -73,7 +73,7 @@ home/login -> register \
 
 ## Research Topics
 
-* (5 points) Automated functional testing for routes.
+* (3 points) Used passport.js module for authorization of users.
 * (3 points) Perform client side form validation using custom JavaScript or JavaScript library
 
 ## [Link to Initial Main Project File](/src/app.js) 
