@@ -25,6 +25,7 @@ function validate() {
     const candidates = start.getElementsByClassName('candidate');
 
     if (position.value === "") {
+        alert('Please enter a position!');
         position.focus();
         return false;
     }

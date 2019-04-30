@@ -4,14 +4,17 @@ function validateRegister() {
     const confirm = document.querySelector('#confirm');
 
     if (username.value === "") {
+        alert('Please enter a username!');
         username.focus();
         return false;
     }
     if (password.value === "") {
+        alert('Please enter a password!');
         password.focus();
         return false;
     } 
     if (password.value !== confirm.value) {
+        alert('Please confirm password!');
         password.focus();
         return false;
     }
@@ -23,10 +26,12 @@ function validateLogin() {
     const password = document.querySelector('#password');
     
     if (username.value === "") {
+        alert('Please enter username!');
         username.focus();
         return false;
     }
     if (password.value === "") {
+        alert('Please enter password!');
         password.focus();
         return false;
     } 
