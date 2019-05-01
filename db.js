@@ -30,8 +30,8 @@ const Election = new mongoose.Schema({
     candidates: [Candidate],
     voterids: [String]
 });
-
-/*let dbconf;
+/*
+let dbconf;
 if (process.env.NODE_ENV === 'PRODUCTION') {
     const fs = require('fs');
     const path = require('path');
@@ -40,9 +40,12 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
 
     const conf = JSON.parse(data);
     dbconf = conf.dbconf;
-} else {*/
-const dbconf = 'mongodb://localhost/score-vote';
-//}
+} else {
+    dbconf = 'mongodb://localhost/score';
+}*/
+
+const dbconf = process.env.MONGOLAB_URI;
+
 mongoose.model('Voter', Voter);
 mongoose.model('Candidate', Candidate);
 mongoose.model('Election', Election);
