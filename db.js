@@ -59,7 +59,7 @@ MongoClient.connect(dbconf, (err, db) => {
         console.log('Unable to connect to the mongoDB server.');
     } else {
         console.log('Connection established to', dbconf);
+        db.close();
     }
-    db.close();
 });
 //mongoose.connect(dbconf, { useNewUrlParser: true });
