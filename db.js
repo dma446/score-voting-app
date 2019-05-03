@@ -51,4 +51,4 @@ const local = 'mongodb://localhost/score';
 mongoose.model('Voter', Voter);
 mongoose.model('Candidate', Candidate);
 mongoose.model('Election', Election);
-mongoose.connect(uri || local, { useNewUrlParser: true });
+mongoose.connect(uri, { useNewUrlParser: true });
