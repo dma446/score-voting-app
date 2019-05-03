@@ -45,8 +45,6 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
 }*/
 
 
-
-
 mongoose.model('Voter', Voter);
 mongoose.model('Candidate', Candidate);
 mongoose.model('Election', Election);
