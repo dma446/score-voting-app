@@ -262,7 +262,13 @@ app.post('/register', (req, res) => {
         });
     });
 });
+const uri = process.env.MONGOLAB_URI;
+const local = 'mongodb://localhost/score';
 
+mongoose.model('Voter', Voter);
+mongoose.model('Candidate', Candidate);
+mongoose.model('Election', Election);
+mongoose.connect(uri || local, { useNewUrlParser: true });
 
 
 module.exports = router;
