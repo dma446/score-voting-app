@@ -135,7 +135,7 @@ app.get('/elections', (req, res) => {
                 res.render('elections', content);
             });
         }
-        else {
+        else if (input === '') {
             Election.find((err, elections, count) => {
                 const voterid = String(req.user._id);
                 elections.forEach((election) => {
