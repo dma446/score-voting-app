@@ -6,8 +6,10 @@
  */
 
 const mongoose = require('mongoose');
+const mongodb = require('mongodb');
 const passportLocalMongoose = require('passport-local-mongoose');
 const URLSlugs = require('mongoose-url-slugs');
+const MongoClient = mongodb.MongoClient;
 //my schema goes here
 
 const Voter = new mongoose.Schema({
@@ -46,7 +48,18 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
 
 const dbconf = process.env.MONGOLAB_URI;
 
+
 mongoose.model('Voter', Voter);
 mongoose.model('Candidate', Candidate);
 mongoose.model('Election', Election);
-mongoose.connect(dbconf, { useNewUrlParser: true });
+
+
+MongoClient.connect(dbconf, (err, db) => {
+    if (err) {
+        console.log('Unable to connect to the mongoDB server.');
+    } else {
+        console.log('Connection established to', dbconf);
+    }
+    db.close();
+});
+//mongoose.connect(dbconf, { useNewUrlParser: true });
