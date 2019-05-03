@@ -89,53 +89,56 @@ app.get('/elections', (req, res) => {
         const content = {};
         const filter = req.query.filter;
         const input = req.query.input;
-        if (filter === "position") {
-            Election.find({position: input}, (err, elections, count) => {
-                const voterid = String(req.user._id);
-                elections.forEach((election) => {
-                    if (election.voterids.includes(voterid)) {
-                        election.hasVoted = true;
-                    }
-                    if (election.creator === req.user.username) {
-                        election.isCreator = true;
-                    }
-                    election.electionData = JSON.stringify(election);
+        if (input !== '') {
+            if (filter === "position") {
+                Election.find({position: input}, (err, elections, count) => {
+                    const voterid = String(req.user._id);
+                    elections.forEach((election) => {
+                        if (election.voterids.includes(voterid)) {
+                            election.hasVoted = true;
+                        }
+                        if (election.creator === req.user.username) {
+                            election.isCreator = true;
+                        }
+                        election.electionData = JSON.stringify(election);
+                    });
+                    content.elections = elections;
+                    res.render('elections', content);
                 });
-                content.elections = elections;
-                res.render('elections', content);
-            });
-        } else if (filter === "creator") {
-            Election.find({creator: input}, (err, elections, count) => {
-                const voterid = String(req.user._id);
-                elections.forEach((election) => {
-                    if (election.voterids.includes(voterid)) {
-                        election.hasVoted = true;
-                    }
-                    if (election.creator === req.user.username) {
-                        election.isCreator = true;
-                    }
-                    election.electionData = JSON.stringify(election);
+            } else if (filter === "creator") {
+                Election.find({creator: input}, (err, elections, count) => {
+                    const voterid = String(req.user._id);
+                    elections.forEach((election) => {
+                        if (election.voterids.includes(voterid)) {
+                            election.hasVoted = true;
+                        }
+                        if (election.creator === req.user.username) {
+                            election.isCreator = true;
+                        }
+                        election.electionData = JSON.stringify(election);
+                    });
+                    content.elections = elections;
+                    res.render('elections', content);
                 });
-                content.elections = elections;
-                res.render('elections', content);
-            });
-        } else if (filter === "electionid") {
-            Election.find({_id: input}, (err, elections, count) => {
-                const voterid = String(req.user._id);
-                elections.forEach((election) => {
-                    if (election.voterids.includes(voterid)) {
-                        election.hasVoted = true;
-                    }
-                    if (election.creator === req.user.username) {
-                        election.isCreator = true;
-                    }
-                    election.electionData = JSON.stringify(election);
+            } else if (filter === "electionid") {
+                Election.find({_id: input}, (err, elections, count) => {
+                    const voterid = String(req.user._id);
+                    elections.forEach((election) => {
+                        if (election.voterids.includes(voterid)) {
+                            election.hasVoted = true;
+                        }
+                        if (election.creator === req.user.username) {
+                            election.isCreator = true;
+                        }
+                        election.electionData = JSON.stringify(election);
+                    });
+                    content.elections = elections;
+                    res.render('elections', content);
                 });
-                content.elections = elections;
-                res.render('elections', content);
-            });
+            }
         }
-        else if (input === '') {
+        
+        else {
             Election.find((err, elections, count) => {
                 const voterid = String(req.user._id);
                 elections.forEach((election) => {
@@ -248,7 +251,11 @@ app.post('/elections/voting', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('register');
+    if (req.isAuthenticated()) {
+        res.redirect('/elections');
+    } else {
+        res.render('register');
+    }
 });
 
 app.post('/register', (req, res) => {
