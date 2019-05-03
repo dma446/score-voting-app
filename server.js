@@ -85,7 +85,7 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/elections', (req, res) => {
-    if (req.isAuthenticated()) {
+    //if (req.isAuthenticated()) {
         const content = {};
         const filter = req.query.filter;
         const input = req.query.input;
@@ -151,9 +151,9 @@ app.get('/elections', (req, res) => {
                 res.render('elections', content);
             });
         }
-    } else {
-        res.redirect('/');
-    }
+    //} else {
+        //res.redirect('/');
+    //}
 });
 
 
@@ -262,11 +262,7 @@ app.post('/register', (req, res) => {
         });
     });
 });
-const uri = process.env.MONGOLAB_URI;
-const local = 'mongodb://localhost/score';
 
-
-mongoose.connect(uri || local, { useNewUrlParser: true });
 
 
 module.exports = router;
